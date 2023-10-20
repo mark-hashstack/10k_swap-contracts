@@ -322,7 +322,7 @@ func mint{
 }(to : felt) -> (liquidity : Uint256):
     alloc_locals
 
-    ReentrancyGuard._start()
+    ReentrancyGuard.start()
 
     let (reserve0, reserve1, _) = getReserves()
     let (token0) = _token0.read()
@@ -347,7 +347,7 @@ func mint{
 
         _mint_part1(feeOn, to, amount0, amount1, _liquidity, balance0, balance1, reserve0, reserve1)
 
-        ReentrancyGuard._end()
+        ReentrancyGuard.end()
         return (_liquidity)
     else:
         # a = amount0 * totalSupply / reserve0
@@ -361,7 +361,7 @@ func mint{
 
         _mint_part1(feeOn, to, amount0, amount1, _liquidity, balance0, balance1, reserve0, reserve1)
 
-        ReentrancyGuard._end()
+        ReentrancyGuard.end()
         return (_liquidity)
     end
 end
@@ -373,7 +373,7 @@ func burn{
 }(to : felt) -> (amount0 : Uint256, amount1 : Uint256):
     alloc_locals
 
-    ReentrancyGuard._start()
+    ReentrancyGuard.start()
 
     let (reserve0, reserve1, _) = getReserves()
     let (token0) = _token0.read()
@@ -412,7 +412,7 @@ func burn{
     let (sender) = get_caller_address()
     Burn.emit(sender, amount0, amount1, to)
 
-    ReentrancyGuard._end()
+    ReentrancyGuard.end()
 
     return (amount0=amount0, amount1=amount1)
 end
@@ -424,7 +424,7 @@ func swap{
 }(amount0Out : Uint256, amount1Out : Uint256, to : felt) -> ():
     alloc_locals
 
-    ReentrancyGuard._start()
+    ReentrancyGuard.start()
 
     # Insufficient output amount
     with_attr error_message("10kSwap: IOA"):
@@ -499,7 +499,7 @@ func swap{
     let (sender) = get_caller_address()
     Swap.emit(sender, amount0In, amount1In, amount0Out, amount1Out, to)
 
-    ReentrancyGuard._end()
+    ReentrancyGuard.end()
 
     return ()
 end
@@ -509,7 +509,7 @@ end
 func skim{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(to : felt) -> ():
     alloc_locals
 
-    ReentrancyGuard._start()
+    ReentrancyGuard.start()
 
     let (token0) = _token0.read()
     let (token1) = _token1.read()
@@ -525,7 +525,7 @@ func skim{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(to 
     IERC20.transfer(contract_address=token0, recipient=to, amount=diff0)
     IERC20.transfer(contract_address=token1, recipient=to, amount=diff1)
 
-    ReentrancyGuard._end()
+    ReentrancyGuard.end()
 
     return ()
 end
@@ -537,7 +537,7 @@ func sync{
 }() -> ():
     alloc_locals
 
-    ReentrancyGuard._start()
+    ReentrancyGuard.start()
 
     let (token0) = _token0.read()
     let (token1) = _token1.read()
@@ -549,7 +549,7 @@ func sync{
 
     _update(balance0, balance1, reserve0, reserve1)
 
-    ReentrancyGuard._end()
+    ReentrancyGuard.end()
 
     return ()
 end
